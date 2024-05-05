@@ -1,5 +1,5 @@
 # Stage 1: Build stage
-FROM maven:3.8.4-openjdk-11 AS build
+FROM maven:3.9.6-openjdk-21 AS build
 WORKDIR /app
 
 # Copy the Maven project file
@@ -15,14 +15,14 @@ COPY src ./src
 RUN mvn package
 
 # Stage 2: Deployment stage
-FROM tomcat:8.5.76-jdk11-openjdk-slim AS deploy
+FROM tomcat:9.0.88-jdk21-openjdk-slim AS deploy
 
 # Copy the built WAR file from the build stage to Tomcat's webapps directory
 COPY --from=build /app/target/*.war /usr/local/tomcat/webapps/my-app.war
 
 # Optionally, you can set environment variables or perform other configurations here
 # For example:
-# ENV JAVA_OPTS="-Xms512m -Xmx1024m"
+ENV JAVA_OPTS="-Xms512m -Xmx1024m"
 
 # Expose the default Tomcat port
 EXPOSE 8080
